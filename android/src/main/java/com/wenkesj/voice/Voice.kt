@@ -287,10 +287,14 @@ class Voice (context:ReactApplicationContext):RecognitionListener {
   }
 
   override fun onEndOfSpeech() {
+    Log.d("ASR", "onEndOfSpeech()")
+    if (!isRecognizing) {
+      Log.d("ASR", "onEndOfSpeech() - already stopped, ignoring duplicate call")
+      return
+    }
     val event = Arguments.createMap()
     event.putBoolean("error", false)
     sendEvent("onSpeechEnd", event)
-    Log.d("ASR", "onEndOfSpeech()")
     isRecognizing = false
   }
 
@@ -304,6 +308,7 @@ class Voice (context:ReactApplicationContext):RecognitionListener {
     event.putMap("error", errorData)
     sendEvent("onSpeechError", event)
     Log.d("ASR", "onError() - $errorMessage")
+    isRecognizing = false
   }
 
   override fun onResults(results: Bundle?) {
@@ -319,6 +324,7 @@ class Voice (context:ReactApplicationContext):RecognitionListener {
     event.putArray("value", arr)
     sendEvent("onSpeechResults", event)
     Log.d("ASR", "onResults()")
+    isRecognizing = false
   }
 
   override fun onPartialResults(partialResults: Bundle?) {

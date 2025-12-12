@@ -270,7 +270,7 @@ class Voice (context:ReactApplicationContext):RecognitionListener {
   override fun onBeginningOfSpeech() {
     val event = Arguments.createMap()
     event.putBoolean("error", false)
-    sendEvent("onSpeechStart", event)
+    sendEvent("onSpeechRecognized", event)
     Log.d("ASR", "onBeginningOfSpeech()")
   }
 
@@ -281,9 +281,8 @@ class Voice (context:ReactApplicationContext):RecognitionListener {
   }
 
   override fun onBufferReceived(buffer: ByteArray?) {
-    val event = Arguments.createMap()
-    event.putBoolean("error", false)
-    sendEvent("onSpeechRecognized", event)
+    // This callback is rarely invoked by speech recognition services
+    // onSpeechRecognized is now fired from onBeginningOfSpeech() instead
     Log.d("ASR", "onBufferReceived()")
   }
 
